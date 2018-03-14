@@ -48,11 +48,11 @@ public class Program {
 		int il_zapotrzebowan = Integer.parseInt(scanner.nextLine());
 		
 		for(int i = 0; i < il_zapotrzebowan; i++) {
-			wczytajPojedynczeZapotrzebowanie(scanner);
+			wczytajPojedynczeZapotrzebowanie(i+1, scanner);
 		}
 	}
 	
-	private void wczytajPojedynczeZapotrzebowanie(Scanner scanner) {
+	private void wczytajPojedynczeZapotrzebowanie(int id, Scanner scanner) {
 		String linia;
 		String[] liniaLista;
 		Zapotrzebowanie zapotrzebowanie;
@@ -61,7 +61,7 @@ public class Program {
 		linia = scanner.nextLine();
 		liniaLista = linia.split(" ");
 		
-		zapotrzebowanie = new Zapotrzebowanie(Integer.parseInt(liniaLista[0]), Integer.parseInt(liniaLista[1]), Integer.parseInt(liniaLista[2]));
+		zapotrzebowanie = new Zapotrzebowanie(id, Integer.parseInt(liniaLista[0]), Integer.parseInt(liniaLista[1]), Integer.parseInt(liniaLista[2]));
 		zapotrzebowanie.iloscSciezek = Integer.parseInt(scanner.nextLine());
 		
 		for(int j = 0; j < zapotrzebowanie.iloscSciezek; j ++) {

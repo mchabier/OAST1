@@ -6,8 +6,8 @@ public class Sciezka {
 	List<Integer> listaIdLaczy = new ArrayList<Integer>();
 
 	public Sciezka(int id_, List<Integer> listaId_){
-		id = id_;
-		listaIdLaczy = listaId_;
+		this.id = id_;
+		this.listaIdLaczy = listaId_;
 	}
 
 }
