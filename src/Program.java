@@ -15,6 +15,28 @@ public class Program {
 		wczytajDane();
 		listaZapotrzebowan.isEmpty();
 		listaLaczy.isEmpty();
+
+		System.out.println("Wczytano dane...");
+		System.out.println("Liczba zapotrzebowań: " + listaZapotrzebowan.size());
+		System.out.println("Liczba łączy: " + listaLaczy.size());
+
+		boolean czyKonczyc = false;
+		Integer opcja = -1;
+		while (!czyKonczyc) {
+			opcja = pokazMenu();
+			switch (opcja) {
+				case 0:
+					new BrutalForce(listaZapotrzebowan, listaLaczy).algorytmBruteForce();
+					break;
+				case 1:
+					break;
+				case 2:
+					czyKonczyc = true;
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
 	public void wczytajDane() throws FileNotFoundException, NumberFormatException {
@@ -90,5 +112,17 @@ public class Program {
 			System.out.println("Bledny format danych! \n");
 			return;
 		}
+	}
+
+	private Integer pokazMenu() {
+		System.out.println("Jeśli chcesz rozpocząć brute force wciśnij [0]");
+		System.out.println("Jeśli chcesz rozpocząć algorytm ewolucyjny wciśnij [1]");
+		System.out.println("Jeśli chcesz zakończyć wciśnij [2]");
+		System.out.println("Wprowadź odpoweidź: ");
+
+		Scanner in = new Scanner(System.in);
+		int num = in.nextInt();
+
+		return num;
 	}
 }
