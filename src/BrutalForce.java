@@ -1,10 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BrutalForce {
 
     public List<Zapotrzebowanie> listaZapotrzebowan = new ArrayList<Zapotrzebowanie>();
     public List<Lacze> listaLaczy = new ArrayList<Lacze>();
+    private List<Rozwiazanie> rozwiazania = new ArrayList<>();
 
     public BrutalForce(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
         listaZapotrzebowan = listaZapotrzebowan_;
@@ -12,43 +14,51 @@ public class BrutalForce {
     }
 
     public void algorytmBruteForce() {
-        // generowanie wszystkich
-
         int najwiekszaLiczbaSciezek = listaZapotrzebowan.stream().mapToInt(x -> x.iloscSciezek).max().getAsInt();
-        Integer[][] pojedynczeRozwiazanie = new Integer[listaZapotrzebowan.size()][najwiekszaLiczbaSciezek];
-        List<Integer[][]> listaWszystkichRozwiazan = new ArrayList<>();
-        List<List<List<Integer>>> listaWszystkichMozliwosciWszystkichZapotrzebowan = new ArrayList<>();
-
-        for (int i = 0; i < listaZapotrzebowan.size(); i++) {
-            List<List<Integer>> wszystkieMozliwosciDlaJednegoZapotrzebowania = new ArrayList<List<Integer>>();
-
-            generujWszystkieMozliweRozlozeniaZapotrzebowania(
-                    new ArrayList<Integer>(),
-                    listaZapotrzebowan.get(i).iloscSciezek,
-                    listaZapotrzebowan.get(i).wartosc,
-                    wszystkieMozliwosciDlaJednegoZapotrzebowania);
-
-            listaWszystkichMozliwosciWszystkichZapotrzebowan.add(wszystkieMozliwosciDlaJednegoZapotrzebowania);
-        }
-
-        for (List<List<Integer>> wszystkieZPojedynczegoZapotrzebowania : listaWszystkichMozliwosciWszystkichZapotrzebowan) {
-
-        }
+        algorytmBruteForce(0, new Rozwiazanie(listaZapotrzebowan.size(), najwiekszaLiczbaSciezek));
     }
 
-    private void generujWszystkieMozliweRozlozeniaZapotrzebowania(List<Integer> jednoRozlozenieZapotrzebowania, int liczbaSciezek, int wartoscZapotrzebowania, List<List<Integer>> wynik) {
-        if (liczbaSciezek == 0) {
-            if (wartoscZapotrzebowania == 0) {
-                /* Odkomentuj jesli chcesz zobaczyć co generuje ta metoda.
-                String z = prefix.stream().map(x -> x.toString()).collect(Collectors.toList()).toString();
-                System.out.println(z);*/
-                wynik.add(jednoRozlozenieZapotrzebowania);
+    private long globalLicznik = 0;
+    private long globalLicznikRozw = 0;
+    private void algorytmBruteForce(int index, Rozwiazanie rozwiazanie) {
+        // generowanie wszystkich
+        if (index == listaZapotrzebowan.size()) {
+            // mamy jedno rozwiązanie
+
+            rozwiazania.add(rozwiazanie);
+            //Komentarz
+            System.out.println("Dodałem nowe rozwiązanie: " + ++globalLicznikRozw);
+            System.out.print("Rozw: ");
+            for (Integer[] integers : rozwiazanie.getRozwiazanie()) {
+                for (Integer integer : integers) {
+                    System.out.print(integer);
+                }
             }
+            System.out.println();
         } else {
-            for (int i = 0; i <= wartoscZapotrzebowania/* && i < 10*/; i++) {
-                List<Integer> copyList = new ArrayList<Integer>(jednoRozlozenieZapotrzebowania);
-                copyList.add(i);
-                generujWszystkieMozliweRozlozeniaZapotrzebowania(copyList, liczbaSciezek - 1, wartoscZapotrzebowania - i, wynik);
+            for (int i = index; i < listaZapotrzebowan.size(); i++) {
+/*                if (index == 0 && i == 1) {
+                    break;
+                }*/
+                for (int j = 0; j < listaZapotrzebowan.get(i).getLiczbeRozlozen(); j++) {
+                    Rozwiazanie noweRozwiazanie = rozwiazanie.getCopy();
+                    //Komentarz
+                    System.out.print(++globalLicznik + " Zapotrzebowanie: " + listaZapotrzebowan.get(i).id + " ");
+
+
+                    List<Integer> rozlozenieZapotrzebowania = listaZapotrzebowan.get(i).getRozlozenieZapotrzebowania(j);
+                    Integer[] rozlozenieZapotrzebowaniaArray = rozlozenieZapotrzebowania.toArray(new Integer[rozlozenieZapotrzebowania.size()]);
+
+                    //Komentarz
+                    String z = rozlozenieZapotrzebowania.stream().map(x -> x.toString()).collect(Collectors.toList()).toString();
+                    System.out.println("dodałem takie rozlozenie: " + z + " | nr rozlozenia: " + j);
+
+                    noweRozwiazanie.getRozwiazanie()[i] = rozlozenieZapotrzebowaniaArray;
+                    algorytmBruteForce(i+1, noweRozwiazanie);
+                }
+                List<Integer> rozlozenieZapotrzebowania = listaZapotrzebowan.get(i).getRozlozenieZapotrzebowania(0);
+                Integer[] rozlozenieZapotrzebowaniaArray = rozlozenieZapotrzebowania.toArray(new Integer[rozlozenieZapotrzebowania.size()]);
+                rozwiazanie.getRozwiazanie()[i] = rozlozenieZapotrzebowaniaArray;
             }
         }
     }
