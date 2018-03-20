@@ -39,7 +39,7 @@ public class Program {
     }
 
     public void wczytajDane() throws FileNotFoundException, NumberFormatException {
-        File file = new File("plik2.txt");
+        File file = new File("plik.txt");
         Scanner scanner = new Scanner(file);
 
         wczytajSiec(scanner);
