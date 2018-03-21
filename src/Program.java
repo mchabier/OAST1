@@ -59,7 +59,7 @@ public class Program {
             linia = scanner.nextLine();
             liniaLista = linia.split(" ");
             id = i + 1;
-            lacze = new Lacze(id, Integer.parseInt(liniaLista[0]), Integer.parseInt(liniaLista[1]), Integer.parseInt(liniaLista[2]), Float.parseFloat(liniaLista[3]));
+            lacze = new Lacze(id, Integer.parseInt(liniaLista[0]), Integer.parseInt(liniaLista[1]), Integer.parseInt(liniaLista[2]), Float.parseFloat(liniaLista[3]), Integer.parseInt(liniaLista[4]));
             listaLaczy.add(lacze);
         }
     }
