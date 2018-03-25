@@ -25,7 +25,11 @@ public class Program {
             opcja = pokazMenu();
             switch (opcja) {
                 case 0:
-                    new BrutalForce(listaZapotrzebowan, listaLaczy).algorytmBruteForce();
+                    BruteForce bruteForce = new BruteForce(listaZapotrzebowan, listaLaczy);
+                    bruteForce.algorytmBruteForce();
+                    bruteForce.wypiszRozwiazania();
+
+
                     break;
                 case 1:
                     break;
@@ -39,7 +43,7 @@ public class Program {
     }
 
     public void wczytajDane() throws FileNotFoundException, NumberFormatException {
-        File file = new File("plik.txt");
+        File file = new File("plik2.txt");
         Scanner scanner = new Scanner(file);
 
         wczytajSiec(scanner);
@@ -84,7 +88,6 @@ public class Program {
 
         zapotrzebowanie = new Zapotrzebowanie(id, Integer.parseInt(liniaLista[0]), Integer.parseInt(liniaLista[1]), Integer.parseInt(liniaLista[2]));
         zapotrzebowanie.iloscSciezek = Integer.parseInt(scanner.nextLine());
-        zapotrzebowanie.generujWszystkieMozliweRozlozeniaZapotrzebowania();
 
         for (int j = 0; j < zapotrzebowanie.iloscSciezek; j++) {
             wczytajSciezke(scanner, linia, liniaLista, zapotrzebowanie);

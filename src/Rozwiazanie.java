@@ -18,10 +18,6 @@ public class Rozwiazanie {
         return rozwiazanie;
     }
 
-    public void setRozwiazanie(Integer[][] rozwiazanie) {
-        this.rozwiazanie = rozwiazanie;
-    }
-
     public Rozwiazanie getCopy() {
         return new Rozwiazanie(rozwiazanie.clone());
     }
@@ -51,5 +47,9 @@ public class Rozwiazanie {
         }
 
         return true;
+    }
+
+    public void zapiszDoPliku() {
+        //TODO: zrobic zapis do pliku
     }
 }
