@@ -18,10 +18,6 @@ public class Zapotrzebowanie {
         this.iloscSciezek = 0;
     }
 
-    public void dodajRozlozenieZapotrzebowania(List<Integer> rozlozenieZapotrzebowania) {
-        rozlozeniaZapotrzebowania.add(rozlozenieZapotrzebowania);
-    }
-
     public Integer getLiczbeRozlozen() {
         return rozlozeniaZapotrzebowania.size();
     }

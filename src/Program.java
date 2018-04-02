@@ -25,13 +25,16 @@ public class Program {
             opcja = pokazMenu();
             switch (opcja) {
                 case 0:
-                    BruteForce bruteForce = new BruteForce(listaZapotrzebowan, listaLaczy);
-                    bruteForce.algorytmBruteForce();
+                    AlgorytmBruteForce bruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
+                    bruteForce.algorytmBruteForce(-1);
                     bruteForce.wypiszRozwiazania();
 
 
                     break;
                 case 1:
+                    AlgorytmEwolucyjny algorytmEwolucyjny = new AlgorytmEwolucyjny(listaZapotrzebowan, listaLaczy);
+                    algorytmEwolucyjny.rozpocznijDzialanieAlgorytmu();
+
                     break;
                 case 2:
                     czyKonczyc = true;
@@ -43,7 +46,7 @@ public class Program {
     }
 
     public void wczytajDane() throws FileNotFoundException, NumberFormatException {
-        File file = new File("plik2.txt");
+        File file = new File("siec2.txt");
         Scanner scanner = new Scanner(file);
 
         wczytajSiec(scanner);

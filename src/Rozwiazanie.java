@@ -1,10 +1,10 @@
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Rozwiazanie {
+public class Rozwiazanie implements Comparable {
     private Integer[][] rozwiazanie;
+    private OcenaRozwiazania ocenaRozwiazania;
 
     public Rozwiazanie(Integer liczbaZapotrzebowan, Integer najwiekszaLiczbaSciezek) {
         rozwiazanie = new Integer[liczbaZapotrzebowan][najwiekszaLiczbaSciezek];
@@ -22,8 +22,15 @@ public class Rozwiazanie {
         return new Rozwiazanie(rozwiazanie.clone());
     }
 
-    public Boolean ocenRozwiazanie(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
+    public OcenaRozwiazania getOcenaRozwiazania() {
+        return ocenaRozwiazania;
+    }
+
+    public OcenaRozwiazania ocenRozwiazanie(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        ocenaRozwiazania = new OcenaRozwiazania();
+        ocenaRozwiazania.CzyAkceptowalne = true;
+        ocenaRozwiazania.Koszt = Double.valueOf(0);
 
         for (int i = 0; i < listaZapotrzebowan_.size(); i++) {
             Zapotrzebowanie zapotrzebowanie = listaZapotrzebowan_.get(i);
@@ -41,15 +48,38 @@ public class Rozwiazanie {
             }
         }
 
-        for (Lacze lacze : listaLaczy_) {
-            if (map.get(lacze.id) > lacze.ilPar * lacze.iloscLambd)
-                return false;
+        Integer liczbaLambd = 0;
+        try {
+            for (Lacze lacze : listaLaczy_) {
+                if (lacze == null) {
+                    String asd = "asdas";
+                }
+
+                liczbaLambd = map.get(lacze.id);
+
+                if (liczbaLambd == null) {
+                    liczbaLambd = 0;
+                }
+
+                if (liczbaLambd > lacze.ilPar * lacze.iloscLambd) {
+                    ocenaRozwiazania.CzyAkceptowalne = false;
+                }
+                ocenaRozwiazania.Koszt += Math.ceil(liczbaLambd / lacze.iloscLambd) * lacze.kosztPary;
+            }
+        } catch (Exception ex) {
+            String asd = "asdas";
         }
 
-        return true;
+
+        return ocenaRozwiazania;
     }
 
     public void zapiszDoPliku() {
         //TODO: zrobic zapis do pliku
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.ocenaRozwiazania.Koszt.compareTo(((Rozwiazanie)o).ocenaRozwiazania.Koszt);
     }
 }
