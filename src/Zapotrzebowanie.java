@@ -38,7 +38,7 @@ public class Zapotrzebowanie {
         if (liczbaSciezek == 0) {
             if (wartoscZapotrzebowania == 0) {
                 /* Odkomentuj jesli chcesz zobaczyć co generuje ta metoda.
-                String z = prefix.stream().map(x -> x.toString()).collect(Collectors.toList()).toString();
+                String z = prefix.stream().odlozoneSygnalyPerLaczeId(x -> x.toString()).collect(Collectors.toList()).toString();
                 System.out.println(z);*/
                 wynik.add(jednoRozlozenieZapotrzebowania);
             }

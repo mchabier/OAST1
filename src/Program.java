@@ -1,5 +1,6 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,12 +9,12 @@ public class Program {
 
     public List<Zapotrzebowanie> listaZapotrzebowan = new ArrayList<Zapotrzebowanie>();
     public List<Lacze> listaLaczy = new ArrayList<Lacze>();
+    Ustawienia ustawienia;
 
 
     public void start() throws NumberFormatException, FileNotFoundException {
+        wczytajPlikKonfiguracyjny();
         wczytajDane();
-        listaZapotrzebowan.isEmpty();
-        listaLaczy.isEmpty();
 
         System.out.println("Wczytano dane...");
         System.out.println("Liczba zapotrzebowań: " + listaZapotrzebowan.size());
@@ -28,7 +29,6 @@ public class Program {
                     AlgorytmBruteForce bruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
                     bruteForce.algorytmBruteForce(-1);
                     bruteForce.wypiszRozwiazania();
-
 
                     break;
                 case 1:
@@ -45,8 +45,30 @@ public class Program {
         }
     }
 
-    public void wczytajDane() throws FileNotFoundException, NumberFormatException {
-        File file = new File("siec2.txt");
+    private void wczytajPlikKonfiguracyjny() throws FileNotFoundException{
+        FileInputStream file = new FileInputStream(new File("ustawienia.xml"));
+        BufferedInputStream bis = new BufferedInputStream(file);
+        /*XMLEncoder xmlEncoder = new XMLEncoder(file);
+        u.setPlikWejsciowy("siec.txt");
+        u.setPlikWyjsciowy("wynik.txt");
+        u.setMaxLiczbaIteracji(500);
+        u.setLiczbaRozwiazanPoczątkowych(1000);
+        u.setIleWybieramyDoReprodukcji(500);
+        u.setZiarnoWyboruRodzicaDoReprodukcji(2);
+        u.setPrawdopodobienstwoKrzyzowania(0.5);
+        u.setZiarnoKrzyzowania(3);
+        u.setPrawdopodobienstwoMutacji(0.5);
+        u.setZiarnoMutacji(4);
+        u.setZiarnoGenerowaniaRozwiazan(56790);
+        xmlEncoder.writeObject(u);
+        xmlEncoder.close();*/
+
+        XMLDecoder xmlDecoder = new XMLDecoder(file);
+        ustawienia = (Ustawienia) xmlDecoder.readObject();
+    }
+
+    private void wczytajDane() throws FileNotFoundException, NumberFormatException {
+        File file = new File(ustawienia.getPlikWejsciowy());
         Scanner scanner = new Scanner(file);
 
         wczytajSiec(scanner);
@@ -122,7 +144,7 @@ public class Program {
         System.out.println("Jeśli chcesz rozpocząć brute force wciśnij [0]");
         System.out.println("Jeśli chcesz rozpocząć algorytm ewolucyjny wciśnij [1]");
         System.out.println("Jeśli chcesz zakończyć wciśnij [2]");
-        System.out.println("Wprowadź odpoweidź: ");
+        System.out.println("Wprowadź odpowiedź: ");
 
         Scanner in = new Scanner(System.in);
         int num = in.nextInt();

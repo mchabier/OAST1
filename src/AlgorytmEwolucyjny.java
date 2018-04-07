@@ -7,11 +7,16 @@ public class AlgorytmEwolucyjny {
     public List<Zapotrzebowanie> listaZapotrzebowan = new ArrayList<Zapotrzebowanie>();
     public List<Lacze> listaLaczy = new ArrayList<Lacze>();
     private List<Rozwiazanie> rozwiazania = new ArrayList<>();
+
+    private int maxLiczbaIteracji = 500;
+    private int liczbaRozwiazanPoczątkowych = 1000;
+    private int ileWybieramyDoReprodukcji = 500;
+    private int ziarnoWyboruRodzicaDoReprodukcji = 2;
     private double prawdopodobienstwoKrzyzowania = 0.5;
-    int ziarnoKrzyzowania = 3;
+    private int ziarnoKrzyzowania = 3;
     private double prawdopodobienstwoMutacji = 0.5;
-    int ziarnoMutacji = 4;
-    int ziarnoGenerowaniaRozwiazan = 56790;
+    private int ziarnoMutacji = 4;
+    private int ziarnoGenerowaniaRozwiazan = 56790;
 
     public AlgorytmEwolucyjny(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
         listaZapotrzebowan = listaZapotrzebowan_;
@@ -19,9 +24,8 @@ public class AlgorytmEwolucyjny {
     }
 
     public void rozpocznijDzialanieAlgorytmu() {
-        int liczbaRozwiazanPoczątkowych = 1000; //TODO: jakąś heurystykę trzeba wymyślić - może w zależności liczba zpotrzebowań
-        int ileWybieramyDoReprodukcji = 500; // Nie więcej niż liczbaRozwiazanPoczątkowych
-        int ziarnoWyboruRodzicaDoReprodukcji = 2;
+         //TODO: jakąś heurystykę trzeba wymyślić - może w zależności liczba zpotrzebowań
+         // Nie więcej niż liczbaRozwiazanPoczątkowych
 
         //Inicjalizacja rozwiazan początkowych
         /*AlgorytmBruteForce algorytmBruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
@@ -39,9 +43,8 @@ public class AlgorytmEwolucyjny {
                     rozwiazanie);
         }*/
 
-
         boolean warunekStopu = true;
-        int maxLiczbaIteracji = 500;
+
         int licznik = 0;
         List<Rozwiazanie> doReprodukcji = new ArrayList<>();
         while (warunekStopu) {
@@ -129,7 +132,6 @@ public class AlgorytmEwolucyjny {
         Integer[][] rozwiazanieArray = rozwiazanie.getRozwiazanie();
         Integer[] gen = null;
         Zapotrzebowanie zapotrzebowanie = null;
-        Random r = null;
         for (int i = 0; i < listaZapotrzebowan.size(); i++) {
             gen = rozwiazanieArray[i];
             wartoscLosowa = random.nextDouble();
@@ -137,12 +139,10 @@ public class AlgorytmEwolucyjny {
             if (wartoscLosowa < prawdopodobienstwoMutacji) {
                 zapotrzebowanie = listaZapotrzebowan.get(i);
 
-                //Mutacją jest permutacja
-                //TODO dodać konfigurację ziarna do permutacji
+                //Mutacja jest permutacja
                 //TODO akoniecznie zmienić zasadę mutacji - nie permutować tylko np. jedną wartość zapotrzebowania gdzieś przenosić na inną ścieżkę, bo teraz tak naprawdę nie ma mutacji
-                r = new Random();
                 for (int j = zapotrzebowanie.iloscSciezek - 1; j >= 0; --j) {
-                    Collections.swap(Arrays.asList(gen), j, r.nextInt(j + 1));
+                    Collections.swap(Arrays.asList(gen), j, random.nextInt(j + 1));
                 }
             }
         }

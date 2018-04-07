@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,12 +82,20 @@ public class AlgorytmBruteForce {
 
     public void wypiszRozwiazania() {
         //TODO wypisanie wszytkich rozwiazan dodanych w rekurencji spełniajacych warunek
-        for (Rozwiazanie rozwiazanie : rozwiazania) {
-            if (rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
-                rozwiazanie.zapiszDoPliku();
-                break;
+        try(FileWriter fw = new FileWriter("wynikiSiecMala.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            for (Rozwiazanie rozwiazanie : rozwiazania) {
+                if (rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
+                    rozwiazanie.zapiszDoPliku(out, listaZapotrzebowan, listaLaczy);
+                    break;
+                }
             }
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
         }
+
 
     }
 }

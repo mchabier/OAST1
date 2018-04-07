@@ -4,15 +4,15 @@ public class Lacze {
 	int id;
 	int poczatek;
 	int koniec;
-	int ilPar;
+	int iloscPar;
 	float kosztPary;
-	int iloscLambd;
+	int liczbaLambdWeWloknie;
 	
 	public Lacze() {
 		this.id = 0;
 		this.poczatek = 0;
 		this.koniec = 0;
-		this.ilPar = 0;
+		this.iloscPar = 0;
 		this.kosztPary = 0;
 	}
 	
@@ -20,8 +20,8 @@ public class Lacze {
 		this.id = id_;
 		this.poczatek = poczatek_;
 		this.koniec = koniec_;
-		this.ilPar = ilPar_;
+		this.iloscPar = ilPar_;
 		this.kosztPary = kosztPary_;
-		this.iloscLambd = iloscLambd_;
+		this.liczbaLambdWeWloknie = iloscLambd_;
 	}
 }
