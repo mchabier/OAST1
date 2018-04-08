@@ -32,7 +32,7 @@ public class Program {
 
                     break;
                 case 1:
-                    AlgorytmEwolucyjny algorytmEwolucyjny = new AlgorytmEwolucyjny(listaZapotrzebowan, listaLaczy);
+                    AlgorytmEwolucyjny algorytmEwolucyjny = new AlgorytmEwolucyjny(listaZapotrzebowan, listaLaczy, ustawienia);
                     algorytmEwolucyjny.rozpocznijDzialanieAlgorytmu();
 
                     break;

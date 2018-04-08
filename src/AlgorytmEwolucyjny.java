@@ -18,15 +18,23 @@ public class AlgorytmEwolucyjny {
     private int ziarnoMutacji = 4;
     private int ziarnoGenerowaniaRozwiazan = 56790;
 
-    public AlgorytmEwolucyjny(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
+    public AlgorytmEwolucyjny(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_, Ustawienia ustawienia) {
         listaZapotrzebowan = listaZapotrzebowan_;
         listaLaczy = listaLaczy_;
+
+        maxLiczbaIteracji = ustawienia.getMaxLiczbaIteracji();
+        liczbaRozwiazanPoczątkowych = ustawienia.getLiczbaRozwiazanPoczątkowych();
+        ileWybieramyDoReprodukcji = ustawienia.getIleWybieramyDoReprodukcji();
+        ziarnoWyboruRodzicaDoReprodukcji = ustawienia.getZiarnoWyboruRodzicaDoReprodukcji();
+        prawdopodobienstwoKrzyzowania = ustawienia.getPrawdopodobienstwoKrzyzowania();
+        ziarnoKrzyzowania = ustawienia.getZiarnoKrzyzowania();
+        prawdopodobienstwoMutacji = ustawienia.getPrawdopodobienstwoMutacji();
+        ziarnoMutacji = ustawienia.getZiarnoMutacji();
+        ziarnoGenerowaniaRozwiazan = ustawienia.getZiarnoGenerowaniaRozwiazan();
     }
 
     public void rozpocznijDzialanieAlgorytmu() {
          //TODO: jakąś heurystykę trzeba wymyślić - może w zależności liczba zpotrzebowań
-         // Nie więcej niż liczbaRozwiazanPoczątkowych
-
         //Inicjalizacja rozwiazan początkowych
         /*AlgorytmBruteForce algorytmBruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
         algorytmBruteForce.algorytmBruteForce(liczbaRozwiazanPoczątkowych);
@@ -83,7 +91,6 @@ public class AlgorytmEwolucyjny {
                 }
             }
 
-
             //wybór najlepszych
 
             /*doReprodukcji
@@ -133,21 +140,55 @@ public class AlgorytmEwolucyjny {
         Integer[] gen = null;
         Zapotrzebowanie zapotrzebowanie = null;
         for (int i = 0; i < listaZapotrzebowan.size(); i++) {
+            zapotrzebowanie = listaZapotrzebowan.get(i);
+            if (zapotrzebowanie.wartosc <= 0) {
+                continue;
+            }
+
             gen = rozwiazanieArray[i];
+            if (gen.length <= 1) {
+                continue;
+            }
+
             wartoscLosowa = random.nextDouble();
 
             if (wartoscLosowa < prawdopodobienstwoMutacji) {
-                zapotrzebowanie = listaZapotrzebowan.get(i);
 
-                //Mutacja jest permutacja
-                //TODO akoniecznie zmienić zasadę mutacji - nie permutować tylko np. jedną wartość zapotrzebowania gdzieś przenosić na inną ścieżkę, bo teraz tak naprawdę nie ma mutacji
+                mutujGen(gen, random, null, null);
+
+                /*//Mutacja jest permutacja
                 for (int j = zapotrzebowanie.iloscSciezek - 1; j >= 0; --j) {
                     Collections.swap(Arrays.asList(gen), j, random.nextInt(j + 1));
-                }
+                }*/
             }
         }
     }
 
+    private void mutujGen(Integer[] gen, Random random, Integer _firstIndex, Integer _secondIndex) {
+        Integer firstIndex = losujFirstIndex(gen, random);
+        Integer secondIndex = losujSecondIndex(gen, random, firstIndex);
+
+        gen[firstIndex]--;
+        gen[secondIndex]++;
+    }
+
+    private int losujFirstIndex(Integer[] gen, Random random) {
+        Integer firstIndex = random.nextInt(gen.length);
+        if (gen[firstIndex] > 0) {
+            return firstIndex;
+        } else {
+            return losujFirstIndex(gen, random);
+        }
+    }
+
+    private int losujSecondIndex(Integer[] gen, Random random, Integer firstIndex) {
+        Integer secondIndex = random.nextInt(gen.length);
+        if (secondIndex != firstIndex) {
+            return secondIndex;
+        } else {
+            return losujSecondIndex(gen, random, firstIndex);
+        }
+    }
 
     private static List<Rozwiazanie> wezNLosowychElementowZListy(List<Rozwiazanie> list, int n, Random r) {
         int length = list.size();
