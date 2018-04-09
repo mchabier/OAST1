@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="9" class="java.beans.XMLDecoder">
+ <object class="Ustawienia">
+  <void property="ileWybieramyDoReprodukcji">
+   <int>50</int>
+  </void>
+  <void property="liczbaRozwiazanPoczątkowych">
+   <int>100</int>
+  </void>
+  <void property="maxLiczbaIteracji">
+   <int>1000</int>
+  </void>
+  <void property="maksymalnyCzasMilisekundy">
+   <int>1000</int>
+  </void>
+  <void property="maksymalnaLiczbaMutacji">
+   <int>500</int>
+  </void>
+  <void property="liczbaGeneracjiObserwowanych">
+   <int>50</int>
+  </void>
+  <void property="plikWejsciowy">
+   <string>siec2.txt</string>
+  </void>
+  <void property="plikWyjsciowy">
+   <string>Wynik.txt</string>
+  </void>
+  <void property="prawdopodobienstwoKrzyzowania">
+   <double>0.7</double>
+  </void>
+  <void property="prawdopodobienstwoMutacji">
+   <double>0.1</double>
+  </void>
+  <void property="ziarnoGenerowaniaRozwiazan">
+   <int>55</int>
+  </void>
+  <void property="ziarnoKrzyzowania">
+   <int>7</int>
+  </void>
+  <void property="ziarnoMutacji">
+   <int>12</int>
+  </void>
+  <void property="ziarnoWyboruRodzicaDoReprodukcji">
+   <int>2</int>
+  </void>
+ </object>
+</java>

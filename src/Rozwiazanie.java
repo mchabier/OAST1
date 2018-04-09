@@ -1,4 +1,5 @@
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,11 @@ public class Rozwiazanie implements Comparable {
     }
 
     public Rozwiazanie getCopy() {
-        return new Rozwiazanie(rozwiazanie.clone());
+        return new Rozwiazanie(Arrays.stream(rozwiazanie)
+                .map(gen -> gen == null ? null : Arrays.stream(gen)
+                        .map(x -> x == null ? null : Integer.valueOf(x))
+                        .toArray(Integer[]::new))
+                .toArray(Integer[][]::new));
     }
 
     public OcenaRozwiazania getOcenaRozwiazania() {
@@ -64,7 +69,8 @@ public class Rozwiazanie implements Comparable {
                 }
                 int ileNadmiarowychLambd = liczbaLambd - lacze.iloscPar * lacze.liczbaLambdWeWloknie;
                 ileNadmiarowychLambd = ileNadmiarowychLambd >= 0 ? ileNadmiarowychLambd : 0;
-                ocenaRozwiazania.Koszt += Math.ceil(ileNadmiarowychLambd / lacze.liczbaLambdWeWloknie) * lacze.kosztPary;
+                //ocenaRozwiazania.Koszt += Math.ceil((double) ileNadmiarowychLambd / lacze.liczbaLambdWeWloknie) * lacze.kosztPary;
+                ocenaRozwiazania.Koszt += ileNadmiarowychLambd;
             }
         } catch (Exception ex) {
             String asd = "asdas";
@@ -74,7 +80,7 @@ public class Rozwiazanie implements Comparable {
         return ocenaRozwiazania;
     }
 
-    public void zapiszDoPliku(PrintWriter out, List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
+    public void zapiszDoStrumieniaWyjsciowego(PrintWriter out, List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_) {
         if (ocenaRozwiazania == null) {
             return;
         }
@@ -91,7 +97,7 @@ public class Rozwiazanie implements Comparable {
 
             out.print(liczbaLambd + "/" + lacze.iloscPar * lacze.liczbaLambdWeWloknie + " ");//Liczba odlozonych sygnalow na mozliwe sygnaly
 
-            out.println((int)Math.ceil((double) liczbaLambd / lacze.liczbaLambdWeWloknie) + "/" + lacze.iloscPar);//Liczba wykorzystanych włókien na wszystkie włókna
+            out.println((int) Math.ceil((double) liczbaLambd / lacze.liczbaLambdWeWloknie) + "/" + lacze.iloscPar);//Liczba wykorzystanych włókien na wszystkie włókna
         }
 
         out.println("### Tablica zapotrzebowań: ");
@@ -107,11 +113,10 @@ public class Rozwiazanie implements Comparable {
             }
             out.println();
         }
-
     }
 
     @Override
     public int compareTo(Object o) {
-        return this.ocenaRozwiazania.Koszt.compareTo(((Rozwiazanie)o).ocenaRozwiazania.Koszt);
+        return this.ocenaRozwiazania.compareTo(((Rozwiazanie) o).ocenaRozwiazania);
     }
 }

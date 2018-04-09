@@ -1,5 +1,4 @@
 import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +25,48 @@ public class Program {
             opcja = pokazMenu();
             switch (opcja) {
                 case 0:
-                    AlgorytmBruteForce bruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
-                    bruteForce.algorytmBruteForce(-1);
-                    bruteForce.wypiszRozwiazania();
+                    System.out.println("Czy chcesz używać ograniczenia czasowego? [y/n]");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    String odp = "";
+                    try {
+                        odp = br.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        odp = "";
+                    }
 
+                    AlgorytmBruteForce bruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy, ustawienia);
+                    bruteForce.algorytmBruteForce(-1, odp.equalsIgnoreCase("y"));
+                    bruteForce.zapiszRozwiazaniaDoPliku();
                     break;
                 case 1:
-                    AlgorytmEwolucyjny algorytmEwolucyjny = new AlgorytmEwolucyjny(listaZapotrzebowan, listaLaczy, ustawienia);
-                    algorytmEwolucyjny.rozpocznijDzialanieAlgorytmu();
+                    System.out.println("Wybierz warunki stopu: ");
+                    System.out.println("Maksymalna liczba iteracji: " + ustawienia.getMaxLiczbaIteracji() + " [1]");
+                    System.out.println("Maksymalny czas wykonywania: " + ustawienia.getMaksymalnyCzasMilisekundy() + "(ms) [2]");
+                    System.out.println("Maksymalna liczba mutacji: " + ustawienia.getMaksymalnaLiczbaMutacji() + " [3]");
+                    System.out.println("Brak poprawy w " + ustawienia.getLiczbaGeneracjiObserwowanych() + " generacjach [4]");
+                    BufferedReader brr = new BufferedReader(new InputStreamReader(System.in));
+                    String odp2 = "";
+                    try {
+                        odp2 = brr.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        odp2 = "";
+                    }
 
+                    AlgorytmEwolucyjny algorytmEwolucyjny = new AlgorytmEwolucyjny(listaZapotrzebowan, listaLaczy, ustawienia);
+                    algorytmEwolucyjny.rozpocznijDzialanieAlgorytmu(Integer.parseInt(odp2));
+                    algorytmEwolucyjny.zapiszRozwiazaniaDoPliku();
                     break;
                 case 2:
+                    wczytajPlikKonfiguracyjny();
+                    wczytajDane();
+
+                    System.out.println("Wczytano dane...");
+                    System.out.println("Liczba zapotrzebowań: " + listaZapotrzebowan.size());
+                    System.out.println("Liczba łączy: " + listaLaczy.size());
+                    break;
+                case 3:
                     czyKonczyc = true;
                     break;
                 default:
@@ -45,7 +75,7 @@ public class Program {
         }
     }
 
-    private void wczytajPlikKonfiguracyjny() throws FileNotFoundException{
+    private void wczytajPlikKonfiguracyjny() throws FileNotFoundException {
         FileInputStream file = new FileInputStream(new File("ustawienia.xml"));
         BufferedInputStream bis = new BufferedInputStream(file);
         /*XMLEncoder xmlEncoder = new XMLEncoder(file);
@@ -143,7 +173,8 @@ public class Program {
     private Integer pokazMenu() {
         System.out.println("Jeśli chcesz rozpocząć brute force wciśnij [0]");
         System.out.println("Jeśli chcesz rozpocząć algorytm ewolucyjny wciśnij [1]");
-        System.out.println("Jeśli chcesz zakończyć wciśnij [2]");
+        System.out.println("Jeśli chcesz wczytać ponownie ustawienia i dane wciśnij [2]");
+        System.out.println("Jeśli chcesz zakończyć wciśnij [3]");
         System.out.println("Wprowadź odpowiedź: ");
 
         Scanner in = new Scanner(System.in);

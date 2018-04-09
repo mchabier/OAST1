@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -6,9 +7,13 @@ import java.util.stream.IntStream;
 public class AlgorytmEwolucyjny {
     public List<Zapotrzebowanie> listaZapotrzebowan = new ArrayList<Zapotrzebowanie>();
     public List<Lacze> listaLaczy = new ArrayList<Lacze>();
-    private List<Rozwiazanie> rozwiazania = new ArrayList<>();
+    private List<Rozwiazanie> najlepszeRozwiazaniaWGeneracjach = new ArrayList<>();
+    private List<Rozwiazanie> najlepszeRozwiazaniePerGeneracja = new ArrayList<>();
 
     private int maxLiczbaIteracji = 500;
+    private int maksymalnyCzasMilisekundy = 1000000;
+    private int maksymalnaLiczbaMutacji = 10000;
+    private int liczbaGeneracjiObserwowanych = 100;
     private int liczbaRozwiazanPoczątkowych = 1000;
     private int ileWybieramyDoReprodukcji = 500;
     private int ziarnoWyboruRodzicaDoReprodukcji = 2;
@@ -18,11 +23,25 @@ public class AlgorytmEwolucyjny {
     private int ziarnoMutacji = 4;
     private int ziarnoGenerowaniaRozwiazan = 56790;
 
+    private String plikWyjsciowy;
+
+    int licznikIteracji = 0;
+    int licznikMutacji = 0;
+
+    long start = 0;
+    long elapsedTime = 0;
+
+    Random randomKrzyzowanie;
+    Random randomMutacja;
+
     public AlgorytmEwolucyjny(List<Zapotrzebowanie> listaZapotrzebowan_, List<Lacze> listaLaczy_, Ustawienia ustawienia) {
         listaZapotrzebowan = listaZapotrzebowan_;
         listaLaczy = listaLaczy_;
 
         maxLiczbaIteracji = ustawienia.getMaxLiczbaIteracji();
+        maksymalnyCzasMilisekundy = ustawienia.getMaksymalnyCzasMilisekundy();
+        maksymalnaLiczbaMutacji = ustawienia.getMaksymalnaLiczbaMutacji();
+        liczbaGeneracjiObserwowanych = ustawienia.getLiczbaGeneracjiObserwowanych();
         liczbaRozwiazanPoczątkowych = ustawienia.getLiczbaRozwiazanPoczątkowych();
         ileWybieramyDoReprodukcji = ustawienia.getIleWybieramyDoReprodukcji();
         ziarnoWyboruRodzicaDoReprodukcji = ustawienia.getZiarnoWyboruRodzicaDoReprodukcji();
@@ -31,51 +50,46 @@ public class AlgorytmEwolucyjny {
         prawdopodobienstwoMutacji = ustawienia.getPrawdopodobienstwoMutacji();
         ziarnoMutacji = ustawienia.getZiarnoMutacji();
         ziarnoGenerowaniaRozwiazan = ustawienia.getZiarnoGenerowaniaRozwiazan();
+
+        plikWyjsciowy = ustawienia.getPlikWyjsciowy();
     }
 
-    public void rozpocznijDzialanieAlgorytmu() {
-         //TODO: jakąś heurystykę trzeba wymyślić - może w zależności liczba zpotrzebowań
+    public void rozpocznijDzialanieAlgorytmu(int wybranyWarunekStopu) {
+        System.out.println("Działanie algorytmu zostało rozpoczęte.");
+        najlepszeRozwiazaniaWGeneracjach = new ArrayList<>();
+        najlepszeRozwiazaniePerGeneracja = new ArrayList<>();
+        //TODO: jakąś heurystykę trzeba wymyślić - może w zależności liczba zpotrzebowań
         //Inicjalizacja rozwiazan początkowych
-        /*AlgorytmBruteForce algorytmBruteForce = new AlgorytmBruteForce(listaZapotrzebowan, listaLaczy);
-        algorytmBruteForce.algorytmBruteForce(liczbaRozwiazanPoczątkowych);
-        List<Rozwiazanie> zbiorRozwiazan = algorytmBruteForce.getRozwiazania();
-        zbiorRozwiazan.forEach(x -> x.ocenRozwiazanie(listaZapotrzebowan, listaLaczy));*/
 
-        /*List<Rozwiazanie>*/
-        Map<OcenaRozwiazania, Rozwiazanie> zbiorRozwiazan = generujRozwiazaniaPoczatkowe(liczbaRozwiazanPoczątkowych);
-
-        /*LinkedHashMap<Double, Rozwiazanie> zbiorRozwiazan = new LinkedHashMap<Double, Rozwiazanie>();
-        for (Rozwiazanie rozwiazanie : rozwiazania) {
-            zbiorRozwiazan.put(
-                    rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).Koszt,
-                    rozwiazanie);
-        }*/
+        TreeMap<OcenaRozwiazania, Rozwiazanie> zbiorRozwiazan = generujRozwiazaniaPoczatkowe(liczbaRozwiazanPoczątkowych);
+        System.out.println("Wygenerowano " + zbiorRozwiazan.size() + " rozwiązań początkowych.");
 
         boolean warunekStopu = true;
 
-        int licznik = 0;
+        licznikIteracji = 0;
+        licznikMutacji = 0;
         List<Rozwiazanie> doReprodukcji = new ArrayList<>();
+        start = System.currentTimeMillis();
+        Rozwiazanie najlepszeRozwiazanie = null;
+        randomKrzyzowanie = new Random(ziarnoKrzyzowania);
+        randomMutacja = new Random(ziarnoMutacji);
         while (warunekStopu) {
-            licznik++;
-            System.out.println("Iteracja: " + licznik);
-            if (maxLiczbaIteracji == licznik) {
-                warunekStopu = false;
-            }
+            licznikIteracji++;
+            //System.out.println("Iteracja: " + licznikIteracji);
+
             //Bierzemu określoną liczbę rodziców zdolną do reprodukcji
-            //Na liście
-            //doReprodukcji = wezNLosowychElementowZListy(/*new ArrayList<Rozwiazanie>(zbiorRozwiazan.values())*/zbiorRozwiazan, ileWybieramyDoReprodukcji, new Random(ziarnoWyboruRodzicaDoReprodukcji));
-            //Na słowniku
             doReprodukcji.clear();
             Set<Map.Entry<OcenaRozwiazania, Rozwiazanie>> set = zbiorRozwiazan.entrySet();
             for (int i = 0; i < set.size() && i < ileWybieramyDoReprodukcji; i++) {
                 doReprodukcji.add(set.iterator().next().getValue().getCopy());
             }
 
+            int ileDoReprodTmp = ileWybieramyDoReprodukcji > set.size() ? set.size() : ileWybieramyDoReprodukcji;
             //Krzyżowanie
-            for (int i = 0; i < ileWybieramyDoReprodukcji / 2; i++) {
+            for (int i = 0; i < ileDoReprodTmp / 2; i++) {
                 wykonajKrzyzowanie(
                         doReprodukcji.get(i),
-                        doReprodukcji.get(ileWybieramyDoReprodukcji / 2 - i - 1));
+                        doReprodukcji.get(ileDoReprodTmp / 2 - i - 1));
             }
 
             //Mutacja + ocena
@@ -83,45 +97,71 @@ public class AlgorytmEwolucyjny {
             for (Rozwiazanie rozwiazanie : doReprodukcji) {
                 wykonajMutacje(rozwiazanie);
                 ocenaRozwiazania = rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
-                if (ocenaRozwiazania.CzyAkceptowalne) {
+                //if (ocenaRozwiazania.CzyAkceptowalne) {
                     zbiorRozwiazan.put(
-                            rozwiazanie.getOcenaRozwiazania(),
+                            ocenaRozwiazania,
                             rozwiazanie);
-//                    zbiorRozwiazan.add(rozwiazanie);
-                }
+                //}
             }
 
-            //wybór najlepszych
-
-            /*doReprodukcji
-                    .parallelStream()
-                    .filter(x -> x.getOcenaRozwiazania().CzyAkceptowalne)
-                    .collect(Collectors.toList());*/
-//            List<Rozwiazanie> result = new ArrayList<Rozwiazanie>(zbiorRozwiazan.values());
-//            Collections.sort(zbiorRozwiazan);
+            // Bierzemy najlepsze rozwiązania
             zbiorRozwiazan = zbiorRozwiazan
                     .entrySet()
                     .parallelStream()
                     .limit(liczbaRozwiazanPoczątkowych)
                     .collect(TreeMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+
+            najlepszeRozwiazanie = zbiorRozwiazan.firstEntry().getValue();
+            najlepszeRozwiazaniaWGeneracjach.add(najlepszeRozwiazanie);
+
+            // Sprawdzamy warunki stopu
+            if ((maxLiczbaIteracji == licznikIteracji && wybranyWarunekStopu == 1) ||
+                    (maksymalnyCzasMilisekundy > System.currentTimeMillis() - start && wybranyWarunekStopu == 2) ||
+                    (maksymalnaLiczbaMutacji == licznikMutacji && wybranyWarunekStopu == 3)) {
+                warunekStopu = false;
+            }
+
+            najlepszeRozwiazaniePerGeneracja.add(najlepszeRozwiazanie);
+            // Sprawdzenie poprawy w N kolejnych generacjach
+            if (licznikIteracji % liczbaGeneracjiObserwowanych == 0 && wybranyWarunekStopu == 4) {
+                OcenaRozwiazania najlepszeRozwiazanieNajstarsze = najlepszeRozwiazaniePerGeneracja.get(0).getOcenaRozwiazania();
+                OcenaRozwiazania najlepszeRozwiazanieNajnowsze = najlepszeRozwiazaniePerGeneracja.get(najlepszeRozwiazaniePerGeneracja.size() - 1).getOcenaRozwiazania();
+
+                if (!najlepszeRozwiazanieNajstarsze.CzyAkceptowalne &&
+                        najlepszeRozwiazanieNajnowsze.CzyAkceptowalne) {
+                    warunekStopu = false;
+                } else if (najlepszeRozwiazanieNajnowsze.Koszt < najlepszeRozwiazanieNajstarsze.Koszt) {
+                    warunekStopu = false;
+                }
+
+                najlepszeRozwiazaniePerGeneracja.clear();
+            }
         }
 
-        Set<Map.Entry<OcenaRozwiazania, Rozwiazanie>> set = zbiorRozwiazan.entrySet();
-        for (int i = 0; i < 100; i++) {
-            Map.Entry<OcenaRozwiazania, Rozwiazanie> entry = set.iterator().next();
-            System.out.println("Rozwiazanie " + (i + 1) + " " + entry.getKey().CzyAkceptowalne + " : " + entry.getValue().getOcenaRozwiazania().Koszt);
+        elapsedTime = System.currentTimeMillis() - start;
+        float elapsedTimeSec = elapsedTime / 1000F;
+
+        System.out.println("Najlepsze rozwiązanie znaleziono w czasie: " + elapsedTimeSec + " [s]");
+        najlepszeRozwiazanie = zbiorRozwiazan.firstEntry().getValue();
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        PrintWriter out = new PrintWriter(bw);
+        najlepszeRozwiazanie.zapiszDoStrumieniaWyjsciowego(out, listaZapotrzebowan, listaLaczy);
+        try {
+            bw.flush();
+//            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void wykonajKrzyzowanie(Rozwiazanie rodzic1, Rozwiazanie rodzic2) {
-        Random random = new Random(ziarnoKrzyzowania);
         double wartoscLosowa = 0;
         Integer[] tmp = null;
 
         Integer[][] rodzic1Rozwiazanie = rodzic1.getRozwiazanie();
         Integer[][] rodzic2Rozwiazanie = rodzic2.getRozwiazanie();
         for (int i = 0; i < rodzic1Rozwiazanie.length; i++) {
-            wartoscLosowa = random.nextDouble();
+            wartoscLosowa = randomKrzyzowanie.nextDouble();
 
             if (wartoscLosowa < prawdopodobienstwoKrzyzowania) {
                 // zamiana genów
@@ -133,7 +173,6 @@ public class AlgorytmEwolucyjny {
     }
 
     private void wykonajMutacje(Rozwiazanie rozwiazanie) {
-        Random random = new Random(ziarnoMutacji);
         double wartoscLosowa = 0;
 
         Integer[][] rozwiazanieArray = rozwiazanie.getRozwiazanie();
@@ -150,12 +189,12 @@ public class AlgorytmEwolucyjny {
                 continue;
             }
 
-            wartoscLosowa = random.nextDouble();
+            wartoscLosowa = randomMutacja.nextDouble();
 
             if (wartoscLosowa < prawdopodobienstwoMutacji) {
 
-                mutujGen(gen, random, null, null);
-
+                mutujGen(gen, randomMutacja, null, null);
+                licznikMutacji++;
                 /*//Mutacja jest permutacja
                 for (int j = zapotrzebowanie.iloscSciezek - 1; j >= 0; --j) {
                     Collections.swap(Arrays.asList(gen), j, random.nextInt(j + 1));
@@ -202,10 +241,10 @@ public class AlgorytmEwolucyjny {
         return list.subList(length - n, length).parallelStream().map(x -> x.getCopy()).collect(Collectors.toList());
     }
 
-    private Map<OcenaRozwiazania, Rozwiazanie> generujRozwiazaniaPoczatkowe(int liczbaRozwiazanDoWygenerowania) {
+    private TreeMap<OcenaRozwiazania, Rozwiazanie> generujRozwiazaniaPoczatkowe(int liczbaRozwiazanDoWygenerowania) {
         int najwiekszaLiczbaSciezek = listaZapotrzebowan.stream().mapToInt(x -> x.iloscSciezek).max().getAsInt();
 //        List<Rozwiazanie> listaRozwiazan = new ArrayList<>();
-        Map<OcenaRozwiazania, Rozwiazanie> listaRozwiazan = new TreeMap<OcenaRozwiazania, Rozwiazanie>();
+        TreeMap<OcenaRozwiazania, Rozwiazanie> listaRozwiazan = new TreeMap<OcenaRozwiazania, Rozwiazanie>();
 
         Rozwiazanie tmp = null;
         Integer[][] rozwiazanie = null;
@@ -228,17 +267,39 @@ public class AlgorytmEwolucyjny {
                 rozwiazanie[j][rozwiazanie[j].length - 1] = max;
             }
 
-            System.out.print("Wygenerowałem " + (++licznikTMP) + " rozwiązanie: ");
+            //System.out.print("Wygenerowałem " + (++licznikTMP) + " rozwiązanie: ");
             if (tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
                 listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                System.out.println("dobre");
+                //System.out.println("dobre");
             } else {
 //                i--;
                 listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                System.out.println("zle");
+                //System.out.println("zle");
             }
         }
 
         return listaRozwiazan;
+    }
+
+    public void zapiszRozwiazaniaDoPliku() {
+        //TODO wypisanie wszytkich rozwiazan dodanych w rekurencji spełniajacych warunek
+        try (FileWriter fw = new FileWriter("Ewolucyjny" + plikWyjsciowy, false);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println();
+            out.println("Zapis trajektorii algorytmu ewolucyjnego: ");
+            out.println();
+            int i = 1;
+            for (Rozwiazanie rozwiazanie : najlepszeRozwiazaniaWGeneracjach) {
+                out.println("Iteracja: " + i++);
+                rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
+                rozwiazanie.zapiszDoStrumieniaWyjsciowego(out, listaZapotrzebowan, listaLaczy);
+            }
+
+            bw.flush();
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
+        }
     }
 }

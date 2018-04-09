@@ -7,9 +7,37 @@ public class Ustawienia implements Serializable {
     private String plikWejsciowy;
     private String plikWyjsciowy;
     private int maxLiczbaIteracji;
+    private int maksymalnyCzasMilisekundy = 1000000;
+    private int maksymalnaLiczbaMutacji = 10000;
+    private int liczbaGeneracjiObserwowanych = 100;
     private int liczbaRozwiazanPoczątkowych;
     private int ileWybieramyDoReprodukcji;
     private int ziarnoWyboruRodzicaDoReprodukcji;
+
+    public int getMaksymalnyCzasMilisekundy() {
+        return maksymalnyCzasMilisekundy;
+    }
+
+    public void setMaksymalnyCzasMilisekundy(int maksymalnyCzasMilisekundy) {
+        this.maksymalnyCzasMilisekundy = maksymalnyCzasMilisekundy;
+    }
+
+    public int getMaksymalnaLiczbaMutacji() {
+        return maksymalnaLiczbaMutacji;
+    }
+
+    public void setMaksymalnaLiczbaMutacji(int maksymalnaLiczbaMutacji) {
+        this.maksymalnaLiczbaMutacji = maksymalnaLiczbaMutacji;
+    }
+
+    public int getLiczbaGeneracjiObserwowanych() {
+        return liczbaGeneracjiObserwowanych;
+    }
+
+    public void setLiczbaGeneracjiObserwowanych(int liczbaGeneracjiObserwowanych) {
+        this.liczbaGeneracjiObserwowanych = liczbaGeneracjiObserwowanych;
+    }
+
     private double prawdopodobienstwoKrzyzowania;
     private int ziarnoKrzyzowania;
     private double prawdopodobienstwoMutacji;
