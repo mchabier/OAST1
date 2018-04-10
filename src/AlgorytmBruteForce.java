@@ -113,19 +113,21 @@ public class AlgorytmBruteForce {
 
     public void zapiszRozwiazaniaDoPliku() {
         //TODO wypisanie wszytkich rozwiazan dodanych w rekurencji spełniajacych warunek
-        try (FileWriter fw = new FileWriter("BruteForce" + plikWyjsciowy, true);
+        try (FileWriter fw = new FileWriter("BruteForce" + plikWyjsciowy, false);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)
         ) {
+            int i = 0;
             for (Rozwiazanie rozwiazanie : rozwiazania) {
-                if (rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
+                out.println("Nr rozwiązania: " + ++i);
+                //if (rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
                     rozwiazanie.zapiszDoStrumieniaWyjsciowego(out, listaZapotrzebowan, listaLaczy);
-                    break;
-                }
+                    //break;
+                //}
             }
 
             bw.flush();
-            bw.close();
+            //bw.close();
         } catch (IOException e) {
             //exception handling left as an exercise for the reader
         }

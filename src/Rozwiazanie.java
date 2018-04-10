@@ -46,8 +46,8 @@ public class Rozwiazanie implements Comparable {
             for (int j = 0; j < zapotrzebowanie.listaSciezek.size(); j++) {
                 Sciezka sciezka = zapotrzebowanie.listaSciezek.get(j);
 
+                int iloscLambd = rozlozenieZapotrzebowania[j];
                 for (Integer idLacza : sciezka.listaIdLaczy) {
-                    int iloscLambd = rozlozenieZapotrzebowania[j];
                     int juzZsumowana = odlozoneSygnalyPerLaczeId.getOrDefault(idLacza, 0);
 
                     odlozoneSygnalyPerLaczeId.put(idLacza, juzZsumowana + iloscLambd);
@@ -70,7 +70,7 @@ public class Rozwiazanie implements Comparable {
                 int ileNadmiarowychLambd = liczbaLambd - lacze.iloscPar * lacze.liczbaLambdWeWloknie;
                 ileNadmiarowychLambd = ileNadmiarowychLambd >= 0 ? ileNadmiarowychLambd : 0;
                 //ocenaRozwiazania.Koszt += Math.ceil((double) ileNadmiarowychLambd / lacze.liczbaLambdWeWloknie) * lacze.kosztPary;
-                ocenaRozwiazania.Koszt += ileNadmiarowychLambd;
+                ocenaRozwiazania.Koszt = Math.max(ocenaRozwiazania.Koszt, ileNadmiarowychLambd);
             }
         } catch (Exception ex) {
             String asd = "asdas";

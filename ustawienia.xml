@@ -20,7 +20,7 @@
    <int>50</int>
   </void>
   <void property="plikWejsciowy">
-   <string>siec2.txt</string>
+   <string>siecM.txt</string>
   </void>
   <void property="plikWyjsciowy">
    <string>Wynik.txt</string>
@@ -32,13 +32,13 @@
    <double>0.1</double>
   </void>
   <void property="ziarnoGenerowaniaRozwiazan">
-   <int>55</int>
+   <int>101</int>
   </void>
   <void property="ziarnoKrzyzowania">
-   <int>7</int>
+   <int>44</int>
   </void>
   <void property="ziarnoMutacji">
-   <int>12</int>
+   <int>77</int>
   </void>
   <void property="ziarnoWyboruRodzicaDoReprodukcji">
    <int>2</int>

@@ -98,9 +98,9 @@ public class AlgorytmEwolucyjny {
                 wykonajMutacje(rozwiazanie);
                 ocenaRozwiazania = rozwiazanie.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
                 //if (ocenaRozwiazania.CzyAkceptowalne) {
-                    zbiorRozwiazan.put(
-                            ocenaRozwiazania,
-                            rozwiazanie);
+                zbiorRozwiazan.put(
+                        ocenaRozwiazania,
+                        rozwiazanie);
                 //}
             }
 
@@ -257,25 +257,47 @@ public class AlgorytmEwolucyjny {
 
             for (int j = 0; j < listaZapotrzebowan.size(); j++) {
                 max = listaZapotrzebowan.get(j).wartosc;
-                for (int k = 0; k < rozwiazanie[j].length; k++) {
-                    Integer x = r.nextInt(max);
-                    max = max - x;
-                    rozwiazanie[j][k] = x;
-                    if (max == 0)
-                        break;
+                for (int a = 0; a < rozwiazanie[j].length; a++) {
+                    rozwiazanie[j][a] = 0;
                 }
-                rozwiazanie[j][rozwiazanie[j].length - 1] = max;
+                for (int k = 0; k < max; k++) {
+                    Integer indexSciezka = null;
+                    try {
+                        Integer ilSci = listaZapotrzebowan.get(j).iloscSciezek;
+                        indexSciezka = ilSci == 1 ? 0 : r.nextInt(ilSci - 1);
+                        //indexSciezka = r.nextInt(ilSci - 1);
+                    } catch (Exception ex) {
+                        String sfsdf = "asd";
+                    }
+//                    max = max - indexSciezka;
+                    if (rozwiazanie[j] == null) {
+                        rozwiazanie[j] = new Integer[listaZapotrzebowan.get(j).iloscSciezek];
+                    }
+
+                    rozwiazanie[j][indexSciezka] += 1;
+
+                    /*if (max == 0)
+                        break;*/
+                }
+                //rozwiazanie[j][rozwiazanie[j].length - 1] = max;
             }
 
-            //System.out.print("Wygenerowałem " + (++licznikTMP) + " rozwiązanie: ");
-            if (tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
+            try {
+                //System.out.print("Wygenerowałem " + (++licznikTMP) + " rozwiązanie: ");
+                tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
                 listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                //System.out.println("dobre");
-            } else {
+                /*if (tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
+                    listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
+                    //System.out.println("dobre");
+                } else {
 //                i--;
-                listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                //System.out.println("zle");
+                    listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
+                    //System.out.println("zle");
+                }*/
+            } catch (Exception ex) {
+                String asdas = "asdads";
             }
+
         }
 
         return listaRozwiazan;
