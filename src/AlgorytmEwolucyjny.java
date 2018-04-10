@@ -193,7 +193,7 @@ public class AlgorytmEwolucyjny {
 
             if (wartoscLosowa < prawdopodobienstwoMutacji) {
 
-                mutujGen(gen, randomMutacja, null, null);
+                mutujGen(gen, randomMutacja);
                 licznikMutacji++;
                 /*//Mutacja jest permutacja
                 for (int j = zapotrzebowanie.iloscSciezek - 1; j >= 0; --j) {
@@ -203,7 +203,7 @@ public class AlgorytmEwolucyjny {
         }
     }
 
-    private void mutujGen(Integer[] gen, Random random, Integer _firstIndex, Integer _secondIndex) {
+    private void mutujGen(Integer[] gen, Random random) {
         Integer firstIndex = losujFirstIndex(gen, random);
         Integer secondIndex = losujSecondIndex(gen, random, firstIndex);
 
@@ -242,15 +242,14 @@ public class AlgorytmEwolucyjny {
     }
 
     private TreeMap<OcenaRozwiazania, Rozwiazanie> generujRozwiazaniaPoczatkowe(int liczbaRozwiazanDoWygenerowania) {
+
         int najwiekszaLiczbaSciezek = listaZapotrzebowan.stream().mapToInt(x -> x.iloscSciezek).max().getAsInt();
-//        List<Rozwiazanie> listaRozwiazan = new ArrayList<>();
         TreeMap<OcenaRozwiazania, Rozwiazanie> listaRozwiazan = new TreeMap<OcenaRozwiazania, Rozwiazanie>();
 
         Rozwiazanie tmp = null;
         Integer[][] rozwiazanie = null;
         Random r = new Random(ziarnoGenerowaniaRozwiazan);
         int max = 0;
-        int licznikTMP = 0;
         for (int i = 0; i < liczbaRozwiazanDoWygenerowania; i++) {
             tmp = new Rozwiazanie(listaZapotrzebowan.size(), najwiekszaLiczbaSciezek);
             rozwiazanie = tmp.getRozwiazanie();
@@ -262,42 +261,18 @@ public class AlgorytmEwolucyjny {
                 }
                 for (int k = 0; k < max; k++) {
                     Integer indexSciezka = null;
-                    try {
-                        Integer ilSci = listaZapotrzebowan.get(j).iloscSciezek;
-                        indexSciezka = ilSci == 1 ? 0 : r.nextInt(ilSci - 1);
-                        //indexSciezka = r.nextInt(ilSci - 1);
-                    } catch (Exception ex) {
-                        String sfsdf = "asd";
-                    }
-//                    max = max - indexSciezka;
+                    Integer ilSci = listaZapotrzebowan.get(j).iloscSciezek;
+                    indexSciezka = ilSci == 1 ? 0 : r.nextInt(ilSci - 1);
                     if (rozwiazanie[j] == null) {
                         rozwiazanie[j] = new Integer[listaZapotrzebowan.get(j).iloscSciezek];
                     }
 
                     rozwiazanie[j][indexSciezka] += 1;
-
-                    /*if (max == 0)
-                        break;*/
                 }
-                //rozwiazanie[j][rozwiazanie[j].length - 1] = max;
             }
 
-            try {
-                //System.out.print("Wygenerowałem " + (++licznikTMP) + " rozwiązanie: ");
-                tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
-                listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                /*if (tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy).CzyAkceptowalne) {
-                    listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                    //System.out.println("dobre");
-                } else {
-//                i--;
-                    listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
-                    //System.out.println("zle");
-                }*/
-            } catch (Exception ex) {
-                String asdas = "asdads";
-            }
-
+            tmp.ocenRozwiazanie(listaZapotrzebowan, listaLaczy);
+            listaRozwiazan.put(tmp.getOcenaRozwiazania(), tmp);
         }
 
         return listaRozwiazan;

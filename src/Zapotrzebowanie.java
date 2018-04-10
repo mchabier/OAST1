@@ -34,7 +34,9 @@ public class Zapotrzebowanie {
                 rozlozeniaZapotrzebowania);
     }
 
-    private void generujWszystkieMozliweRozlozeniaZapotrzebowania(List<Integer> jednoRozlozenieZapotrzebowania, int liczbaSciezek, int wartoscZapotrzebowania, List<List<Integer>> wynik) {
+    private void generujWszystkieMozliweRozlozeniaZapotrzebowania(List<Integer> jednoRozlozenieZapotrzebowania,
+                                                                  int liczbaSciezek, int wartoscZapotrzebowania,
+                                                                  List<List<Integer>> wynik) {
         if (liczbaSciezek == 0) {
             if (wartoscZapotrzebowania == 0) {
                 /* Odkomentuj jesli chcesz zobaczyć co generuje ta metoda.

@@ -22,6 +22,7 @@ public class AlgorytmBruteForce {
     }
 
     public void algorytmBruteForce(int liczbaRozwiazanDoWygenerowania, boolean czyWarunekStopu) {
+
         rozwiazania = new ArrayList<>();
         start = System.currentTimeMillis();
         for (Zapotrzebowanie zapotrzebowanie : listaZapotrzebowan) {
@@ -62,7 +63,10 @@ public class AlgorytmBruteForce {
     private long globalLicznik = 0;
     private long globalLicznikRozw = 0;
 
-    private boolean algorytmBruteForce(int index, Rozwiazanie rozwiazanie, int liczbaRozwiazanDoWygenerowania, boolean czyWarunekStopu) {
+    private boolean algorytmBruteForce(int index, Rozwiazanie rozwiazanie,
+                                       int liczbaRozwiazanDoWygenerowania,
+                                       boolean czyWarunekStopu) {
+
         if (System.currentTimeMillis() - start > maksymalnyCzasMilisekundy && czyWarunekStopu) {
             return false;
         }
