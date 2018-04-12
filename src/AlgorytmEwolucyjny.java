@@ -114,11 +114,17 @@ public class AlgorytmEwolucyjny {
             najlepszeRozwiazanie = zbiorRozwiazan.firstEntry().getValue();
             najlepszeRozwiazaniaWGeneracjach.add(najlepszeRozwiazanie);
 
+            if (najlepszeRozwiazanie.getOcenaRozwiazania().Koszt == 0) {
+                elapsedTime = System.currentTimeMillis() - start;
+                break;
+            }
+
             // Sprawdzamy warunki stopu
             if ((maxLiczbaIteracji == licznikIteracji && wybranyWarunekStopu == 1) ||
                     (maksymalnyCzasMilisekundy > System.currentTimeMillis() - start && wybranyWarunekStopu == 2) ||
                     (maksymalnaLiczbaMutacji == licznikMutacji && wybranyWarunekStopu == 3)) {
                 warunekStopu = false;
+                elapsedTime = System.currentTimeMillis() - start;
             }
 
             najlepszeRozwiazaniePerGeneracja.add(najlepszeRozwiazanie);
@@ -130,18 +136,20 @@ public class AlgorytmEwolucyjny {
                 if (!najlepszeRozwiazanieNajstarsze.CzyAkceptowalne &&
                         najlepszeRozwiazanieNajnowsze.CzyAkceptowalne) {
                     warunekStopu = false;
+                    elapsedTime = System.currentTimeMillis() - start;
                 } else if (najlepszeRozwiazanieNajnowsze.Koszt < najlepszeRozwiazanieNajstarsze.Koszt) {
                     warunekStopu = false;
+                    elapsedTime = System.currentTimeMillis() - start;
                 }
 
                 najlepszeRozwiazaniePerGeneracja.clear();
             }
         }
 
-        elapsedTime = System.currentTimeMillis() - start;
         float elapsedTimeSec = elapsedTime / 1000F;
 
         System.out.println("Najlepsze rozwiązanie znaleziono w czasie: " + elapsedTimeSec + " [s]");
+        System.out.println("Najlepsze rozwiązanie po wykonaniu: " +licznikIteracji + " iteracji");
         najlepszeRozwiazanie = zbiorRozwiazan.firstEntry().getValue();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         PrintWriter out = new PrintWriter(bw);

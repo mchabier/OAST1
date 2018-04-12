@@ -60,6 +60,8 @@ public class Program {
                     break;
                 case 2:
                     wczytajPlikKonfiguracyjny();
+                    listaLaczy.clear();
+                    listaZapotrzebowan.clear();
                     wczytajDane();
 
                     System.out.println("Wczytano dane...");

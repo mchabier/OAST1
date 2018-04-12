@@ -11,7 +11,7 @@
    <int>1000</int>
   </void>
   <void property="maksymalnyCzasMilisekundy">
-   <int>1000</int>
+   <int>10000</int>
   </void>
   <void property="maksymalnaLiczbaMutacji">
    <int>500</int>
@@ -20,7 +20,7 @@
    <int>50</int>
   </void>
   <void property="plikWejsciowy">
-   <string>siecM.txt</string>
+   <string>siec2.txt</string>
   </void>
   <void property="plikWyjsciowy">
    <string>Wynik.txt</string>

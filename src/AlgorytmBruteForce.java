@@ -42,10 +42,10 @@ public class AlgorytmBruteForce {
             System.out.println("Przekroczono czas wykonywania algorytmu. Znaleziono " + rozwiazania.size() + " rozwiązań.");
         }
 
-        elapsedTime = System.currentTimeMillis() - start;
         float elapsedTimeSec = elapsedTime/1000F;
 
         System.out.println("Najlepsze rozwiązanie znaleziono w czasie: " + elapsedTimeSec + " [s]");
+        System.out.println("Trwa proces zapisu rozwiązań do pliku...");
         rozwiazania.forEach(x -> x.ocenRozwiazanie(listaZapotrzebowan, listaLaczy));
         Collections.sort(rozwiazania);
         Rozwiazanie najlepszeRozwiazanie = rozwiazania.get(0);
@@ -54,7 +54,7 @@ public class AlgorytmBruteForce {
         najlepszeRozwiazanie.zapiszDoStrumieniaWyjsciowego(out, listaZapotrzebowan, listaLaczy);
         try {
             bw.flush();
-            bw.close();
+            //bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +68,7 @@ public class AlgorytmBruteForce {
                                        boolean czyWarunekStopu) {
 
         if (System.currentTimeMillis() - start > maksymalnyCzasMilisekundy && czyWarunekStopu) {
+            elapsedTime = System.currentTimeMillis() - start;
             return false;
         }
         if (index == listaZapotrzebowan.size()) {
@@ -112,7 +113,7 @@ public class AlgorytmBruteForce {
             rozwiazanie.getRozwiazanie()[index] = rozlozenieZapotrzebowaniaArray;
         }
 
-        return true;
+        return System.currentTimeMillis() - start <= maksymalnyCzasMilisekundy && czyWarunekStopu;
     }
 
     public void zapiszRozwiazaniaDoPliku() {
